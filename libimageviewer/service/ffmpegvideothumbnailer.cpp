@@ -51,12 +51,24 @@ static QString libPath(const QString &strlib)
 
 bool initFFmpegVideoThumbnailer()
 {
-    QLibrary library(libPath("libffmpegthumbnailer.so"));
+    // FIXME:后续修改为QLibrary加载模式
+    QString strLibPath = libPath("libffmpegthumbnailer.so");
+    if (strLibPath.isEmpty()) {
+        resolveSuccessed = false;
+        return false;
+    }
+    QLibrary library(strLibPath);
+
     m_creat_video_thumbnailer = reinterpret_cast<mvideo_thumbnailer_create>(library.resolve("video_thumbnailer_create"));
     m_mvideo_thumbnailer_destroy = reinterpret_cast<mvideo_thumbnailer_destroy>(library.resolve("video_thumbnailer_destroy"));
     m_mvideo_thumbnailer_create_image_data = reinterpret_cast<mvideo_thumbnailer_create_image_data>(library.resolve("video_thumbnailer_create_image_data"));
     m_mvideo_thumbnailer_destroy_image_data = reinterpret_cast<mvideo_thumbnailer_destroy_image_data>(library.resolve("video_thumbnailer_destroy_image_data"));
     m_mvideo_thumbnailer_generate_thumbnail_to_buffer = reinterpret_cast<mvideo_thumbnailer_generate_thumbnail_to_buffer>(library.resolve("video_thumbnailer_generate_thumbnail_to_buffer"));
+
+    if (nullptr == m_creat_video_thumbnailer) {
+        resolveSuccessed = false;
+        return false;
+    }
     m_video_thumbnailer = m_creat_video_thumbnailer();
 
     if (m_mvideo_thumbnailer_destroy == nullptr
