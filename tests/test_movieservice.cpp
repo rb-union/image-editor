@@ -39,7 +39,7 @@ TEST(movieservice, movieCover)
     auto image_1 = MovieService::instance()->getMovieCover(QUrl::fromLocalFile(filePath), QApplication::applicationDirPath() + QDir::separator());
 
     //分接口
-    auto image_2 = MovieService::instance()->getMovieCover_gstreamer(QUrl::fromLocalFile(filePath));
+    auto image_2 = MovieService::instance()->getMovieCover_ffmpegthumbnailerlib(QUrl::fromLocalFile(filePath));
     auto image_3 = MovieService::instance()->getMovieCover_ffmpegthumbnailer(QUrl::fromLocalFile(filePath), QApplication::applicationDirPath() + QDir::separator());
 
     //简单判断
